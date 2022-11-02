@@ -43,6 +43,14 @@ CREATE TABLE transfers
 	, CONSTRAINT fk_transfers_from_account FOREIGN KEY (from_account) REFERENCES account (account_id)
 	, CONSTRAINT fk_transfers_to_account FOREIGN KEY (to_account) REFERENCES account (account_id)
 );
+INSERT into tenmo_user (username, password_hash)
+VALUES ('Mitch','mmmmm')
+,('Jeff', 'jjjjj')
+,('Sam','sssss');
 
+INSERT into account (user_id, balance)
+VALUES ((SELECT user_id from tenmo_user where username = 'Mitch'), 1000)
+,((SELECT user_id from tenmo_user where username = 'Jeff'), 1000)
+,((SELECT user_id from tenmo_user where username = 'Sam'), 1000);
 
 COMMIT;
