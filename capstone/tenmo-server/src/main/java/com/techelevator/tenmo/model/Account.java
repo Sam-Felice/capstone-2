@@ -1,18 +1,16 @@
 package com.techelevator.tenmo.model;
 
-import com.techelevator.tenmo.dao.AccountsDao;
-
 import java.math.BigDecimal;
 
-public class Accounts  {
+public class Account {
 
     private int accountId;
     private int userId;
     private BigDecimal balance;
 
-    public Accounts() {}
+    public Account() {}
 
-    public Accounts(int accountId, int userId, BigDecimal balance) {
+    public Account(int accountId, int userId, BigDecimal balance) {
         this.accountId = accountId;
         this.userId = userId;
         this.balance = balance;
