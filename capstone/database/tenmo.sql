@@ -44,13 +44,15 @@ CREATE TABLE transfers
 	, CONSTRAINT fk_transfers_to_account FOREIGN KEY (to_account) REFERENCES account (account_id)
 );
 INSERT into tenmo_user (username, password_hash)
-VALUES ('Mitch','mmmmm')
-,('Jeff', 'jjjjj')
-,('Sam','sssss');
+VALUES ('Mitch','$2a$10$hZp2.P7/bdPuoTOFPGGn1OBZzPhBLrNSrEsV08KTXtuugFdZb0qgm')
+,('Jeff', '$2a$10$0FajsoNCalTR/EA2n7bb/e.hDH.sYRgKAMHYMqrqwS1d6oItG89Hu')
+,('Sam','$2a$10$iSEs8KgvkWr25WoJ1iyV7ub.qkx4SG4jV1FY/Hdnwjihk5gj7cXhy');
 
 INSERT into account (user_id, balance)
 VALUES ((SELECT user_id from tenmo_user where username = 'Mitch'), 1000)
 ,((SELECT user_id from tenmo_user where username = 'Jeff'), 1000)
 ,((SELECT user_id from tenmo_user where username = 'Sam'), 1000);
+
+COMMIT;
 
 COMMIT;
