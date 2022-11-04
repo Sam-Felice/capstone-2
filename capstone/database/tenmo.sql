@@ -53,6 +53,9 @@ VALUES ((SELECT user_id from tenmo_user where username = 'Mitch'), 1000)
 ,((SELECT user_id from tenmo_user where username = 'Jeff'), 1000)
 ,((SELECT user_id from tenmo_user where username = 'Sam'), 1000);
 
-COMMIT;
+
+-- ADD APPROVED AND PENDING BOOLEAN ROWS TO TRANSFERS TABLE
 
 COMMIT;
+
+
