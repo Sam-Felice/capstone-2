@@ -3,6 +3,7 @@ package com.techelevator.tenmo.model;
 import com.techelevator.tenmo.dao.TransferDao;
 
 import java.math.BigDecimal;
+import java.security.Principal;
 
 public class Transfer implements TransferDao {
     private int txfrId;
@@ -52,7 +53,7 @@ public class Transfer implements TransferDao {
 
 
     @Override
-    public void executeTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount) {
-
+    public boolean executeTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount, Principal principal) {
+        return true;
     }
 }
