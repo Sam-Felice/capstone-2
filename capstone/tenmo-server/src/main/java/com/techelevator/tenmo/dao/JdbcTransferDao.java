@@ -1,5 +1,6 @@
 package com.techelevator.tenmo.dao;
 
+import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -16,21 +17,38 @@ public class JdbcTransferDao implements TransferDao {
 
 
     @Override
-    public boolean executeTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount, Principal principal) {
-        //Get current Username
-        String currentUser = principal.getName();
+    public boolean testTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount) {
+        //Get the account balance of the fromAccount using the fromAccountId
+        String sqlFromAccBalance = "SELECT account.balance FROM account\n" +
+                "JOIN transfers ON account.account_id = transfers.from_account\n" +
+                "WHERE from_account = ?;";
+        BigDecimal fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, BigDecimal.class, fromAccount);
 
-        //Get the accountId of the fromAccount with a username
-        String sqlaccountId = "SELECT account.account_id from account\n" +
-                "JOIN tenmo_user ON account.user_id = tenmo_user.user_id\n" +
-                "WHERE tenmo_user.username = ?;";
-        Integer fromAccountId = jdbcTemplate.queryForObject(sqlaccountId, Integer.class, currentUser);
+        Double tempFromBalance = fromAccountBalance.doubleValue();
+        if (tempFromBalance ==  1000) {
+            return true;
+        }
+
+
+        return false;
+    }
+
+    @Override
+    public boolean executeTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount) {
+        //Get current Username
+//        String currentUser = principal.getName();
+
+//        //Get the accountId of the fromAccount with a username
+//        String sqlaccountId = "SELECT account.account_id from account\n" +
+//                "JOIN tenmo_user ON account.user_id = tenmo_user.user_id\n" +
+//                "WHERE tenmo_user.username = ?;";
+//        Integer fromAccountId = jdbcTemplate.queryForObject(sqlaccountId, Integer.class, currentUser);
 
         //Get the account balance of the fromAccount using the fromAccountId
         String sqlFromAccBalance = "SELECT account.balance FROM account\n" +
                 "JOIN transfers ON account.account_id = transfers.from_account\n" +
                 "WHERE from_account = ?;";
-        BigDecimal fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, BigDecimal.class, fromAccountId);
+        BigDecimal fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, BigDecimal.class, fromAccount);
 
         //Get the account balance of the toAccount using the toAccount
         String sqlToAccBalance = "SELECT account.balance FROM account\n" +
@@ -47,12 +65,12 @@ public class JdbcTransferDao implements TransferDao {
             //Inserts new transfer into the transfer table
             String sql = "INSERT INTO transfer (from_account, to_account, transfer_amount)\n" +
                     "VALUES (?,?,?) RETURNING transfer_id;";
-            int transferId = jdbcTemplate.update (sql, int.class, fromAccountId, toAccount, txfrAmount);
+            int transferId = jdbcTemplate.update (sql, int.class, fromAccount, toAccount, txfrAmount);
 
             //updates the fromAccount balance
             String sql2 = "UPDATE account SET balance = balance - ?\n" +
                     "WHERE account_id = ?;";
-            jdbcTemplate.update(sql2, txfrAmount, fromAccountId);
+            jdbcTemplate.update(sql2, txfrAmount, fromAccount);
 
             //updates the toAccount balance
             String sql3 = "UPDATE account SET balance = balance + ?\n" +

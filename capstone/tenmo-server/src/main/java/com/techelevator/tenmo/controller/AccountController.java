@@ -6,6 +6,7 @@ import com.techelevator.tenmo.dao.UserDao;
 import com.techelevator.tenmo.model.Account;
 import com.techelevator.tenmo.model.Transfer;
 import com.techelevator.tenmo.model.User;
+import org.springframework.security.access.method.P;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,11 +45,19 @@ public class AccountController {
     }
 
     @RequestMapping(path =  "/transfer", method = RequestMethod.POST)
-    public void executeTransfer(@RequestBody int toAccount, int fromAccount, BigDecimal txfrAmount) {
-//        return this.transferDao.executeTransfer(txfrAmount);
-
-
+    public boolean executeTransfer(@RequestParam int toAccount,
+                                @RequestParam int fromAccount,
+                                @RequestParam BigDecimal txfrAmount) {
+        return this.transferDao.executeTransfer(toAccount, fromAccount, txfrAmount);
     }
+
+    @RequestMapping(path = "/test", method = RequestMethod.POST)
+    public boolean testTransfer(@RequestParam int toAccount,
+                                   @RequestParam int fromAccount,
+                                   @RequestParam BigDecimal txfrAmount) {
+        return this.transferDao.testTransfer(toAccount, fromAccount, txfrAmount);
+    }
+
 
     @RequestMapping(path = "/account/{username}/id", method = RequestMethod.GET)
     public int findAccountIdByUsername(@PathVariable String username){
