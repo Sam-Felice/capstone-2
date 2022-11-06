@@ -53,6 +53,8 @@ VALUES ((SELECT user_id from tenmo_user where username = 'Mitch'), 1000)
 ,((SELECT user_id from tenmo_user where username = 'Jeff'), 1000)
 ,((SELECT user_id from tenmo_user where username = 'Sam'), 1000);
 
+INSERT into transfers (from_account, to_account, transfer_amount)
+VALUES (2001, 2002, 25.0);
 
 -- ADD APPROVED AND PENDING BOOLEAN ROWS TO TRANSFERS TABLE
 
