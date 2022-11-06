@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Transfer;
+import org.springframework.data.relational.core.sql.In;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +25,12 @@ public class JdbcTransferDao implements TransferDao {
                 "WHERE from_account = ?;";
         BigDecimal fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, BigDecimal.class, fromAccount);
 
-        Double tempFromBalance = fromAccountBalance.doubleValue();
+        String sqlToAccBalance = "SELECT account.balance FROM account\n" +
+                "JOIN transfers ON account.account_id = transfers.from_account\n" +
+                "WHERE to_account = ?;";
+        BigDecimal toAccountBalance = jdbcTemplate.queryForObject(sqlToAccBalance, BigDecimal.class, toAccount);
+
+        Double tempFromBalance = toAccountBalance.doubleValue();
         if (tempFromBalance ==  1000) {
             return true;
         }
@@ -44,13 +50,13 @@ public class JdbcTransferDao implements TransferDao {
 //                "WHERE tenmo_user.username = ?;";
 //        Integer fromAccountId = jdbcTemplate.queryForObject(sqlaccountId, Integer.class, currentUser);
 
-        //Get the account balance of the fromAccount using the fromAccountId
+        //Get the account balance of the fromAccount using the fromAccountId TESTED
         String sqlFromAccBalance = "SELECT account.balance FROM account\n" +
                 "JOIN transfers ON account.account_id = transfers.from_account\n" +
                 "WHERE from_account = ?;";
         BigDecimal fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, BigDecimal.class, fromAccount);
 
-        //Get the account balance of the toAccount using the toAccount
+        //Get the account balance of the toAccount using the toAccount TESTED
         String sqlToAccBalance = "SELECT account.balance FROM account\n" +
                 "JOIN transfers ON account.account_id = transfers.from_account\n" +
                 "WHERE to_account = ?;";
@@ -59,13 +65,14 @@ public class JdbcTransferDao implements TransferDao {
         //Changes BigDecimal values to doubles to be used in comparison statements
         Double tempFromBalance = fromAccountBalance.doubleValue();
         Double tempTransfer = txfrAmount.doubleValue();
-        if (toAccount == fromAccount || tempTransfer <= 0 || tempTransfer <= tempFromBalance) {
+        if (toAccount == fromAccount || tempTransfer <= 0 || tempFromBalance <= tempTransfer) {
             return false;
         } else {
             //Inserts new transfer into the transfer table
-            String sql = "INSERT INTO transfer (from_account, to_account, transfer_amount)\n" +
+            String sql = "INSERT INTO transfers (to_account, from_account, transfer_amount)\n" +
                     "VALUES (?,?,?) RETURNING transfer_id;";
-            int transferId = jdbcTemplate.update (sql, int.class, fromAccount, toAccount, txfrAmount);
+
+             int transferId = jdbcTemplate.queryForObject(sql, Integer.class, toAccount, fromAccount, txfrAmount);
 
             //updates the fromAccount balance
             String sql2 = "UPDATE account SET balance = balance - ?\n" +
