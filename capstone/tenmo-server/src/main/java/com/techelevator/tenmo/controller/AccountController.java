@@ -70,4 +70,9 @@ public class AccountController {
         return principal.getName();
     }
 
+    @RequestMapping(path = "/transfer/{id}", method = RequestMethod.GET)
+    public List<Transfer> findTransferByAccountId(@PathVariable int id) {
+        return this.transferDao.findTransferByAccountId(id);
+    }
+
 }

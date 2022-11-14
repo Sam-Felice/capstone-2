@@ -1,12 +1,13 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Transfer;
-import org.springframework.data.relational.core.sql.In;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
-import java.security.Principal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcTransferDao implements TransferDao {
@@ -88,5 +89,28 @@ public class JdbcTransferDao implements TransferDao {
         }
         return true;
     }
-    //LEFT OFF need to comment out each method one by one to see if we can find the error 400 Can't deserialize int
+
+    @Override
+    public List<Transfer> findTransferByAccountId(int id) {
+        List<Transfer> transfers = new ArrayList<>();
+        String sql = "SELECT transfer_id, from_Account, to_Account, transfer_amount FROM transfers\n" +
+                "JOIN account on account.account_id = transfers.from_account\n" +
+                "JOIN tenmo_user on tenmo_user.user_id = account.user_id\n" +
+                "WHERE transfers.from_account = ? OR transfers.to_account = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, id, id);
+        while (results.next()) {
+            transfers.add(mapRowToTransfers(results));
+        }
+        return transfers;
+    }
+
+    private Transfer mapRowToTransfers(SqlRowSet rs) {
+        Transfer transfers = new Transfer();
+        transfers.setTxfrId(rs.getInt("transfer_id"));
+        transfers.setFromAccount(rs.getInt("from_account"));
+        transfers.setToAccount(rs.getInt("to_account"));
+        transfers.setTxfrAmount(rs.getBigDecimal("transfer_amount"));
+        return transfers;
+    }
+
 }
