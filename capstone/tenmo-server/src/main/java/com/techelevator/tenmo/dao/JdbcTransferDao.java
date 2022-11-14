@@ -18,27 +18,27 @@ public class JdbcTransferDao implements TransferDao {
     }
 
 
-    @Override
-    public boolean testTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount) {
-        //Get the account balance of the fromAccount using the fromAccountId
-        String sqlFromAccBalance = "SELECT account.balance FROM account\n" +
-                "JOIN transfers ON account.account_id = transfers.from_account\n" +
-                "WHERE from_account = ?;";
-        BigDecimal fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, BigDecimal.class, fromAccount);
-
-        String sqlToAccBalance = "SELECT account.balance FROM account\n" +
-                "JOIN transfers ON account.account_id = transfers.from_account\n" +
-                "WHERE to_account = ?;";
-        BigDecimal toAccountBalance = jdbcTemplate.queryForObject(sqlToAccBalance, BigDecimal.class, toAccount);
-
-        Double tempFromBalance = toAccountBalance.doubleValue();
-        if (tempFromBalance ==  1000) {
-            return true;
-        }
-
-
-        return false;
-    }
+//    @Override
+//    public boolean testTransfer(int toAccount, int fromAccount, double txfrAmount) {
+//        //Get the account balance of the fromAccount using the fromAccountId
+//        String sqlFromAccBalance = "SELECT account.balance FROM account\n" +
+//                "JOIN transfers ON account.account_id = transfers.from_account\n" +
+//                "WHERE from_account = ?;";
+//        double fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, double.class, fromAccount);
+//
+//        String sqlToAccBalance = "SELECT account.balance FROM account\n" +
+//                "JOIN transfers ON account.account_id = transfers.from_account\n" +
+//                "WHERE to_account = ?;";
+//        double toAccountBalance = jdbcTemplate.queryForObject(sqlToAccBalance, double.class, toAccount);
+//
+//
+//        if (toAccountBalance ==  1000) {
+//            return true;
+//        }
+//
+//
+//        return false;
+//    }
 
     @Override
     public boolean executeTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount) {
@@ -53,14 +53,14 @@ public class JdbcTransferDao implements TransferDao {
 
         //Get the account balance of the fromAccount using the fromAccountId TESTED
         String sqlFromAccBalance = "SELECT account.balance FROM account\n" +
-                "JOIN transfers ON account.account_id = transfers.from_account\n" +
-                "WHERE from_account = ?;";
+//                "JOIN transfers ON account.account_id = transfers.from_account\n" +
+                "WHERE account.account_id = ?;";
         BigDecimal fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, BigDecimal.class, fromAccount);
 
         //Get the account balance of the toAccount using the toAccount TESTED
         String sqlToAccBalance = "SELECT account.balance FROM account\n" +
-                "JOIN transfers ON account.account_id = transfers.from_account\n" +
-                "WHERE to_account = ?;";
+//                "JOIN transfers ON account.account_id = transfers.from_account\n" +
+                "WHERE account.account_id = ?;";
         BigDecimal toAccountBalance = jdbcTemplate.queryForObject(sqlToAccBalance, BigDecimal.class, toAccount);
 
         //Changes BigDecimal values to doubles to be used in comparison statements
@@ -73,7 +73,7 @@ public class JdbcTransferDao implements TransferDao {
             String sql = "INSERT INTO transfers (to_account, from_account, transfer_amount)\n" +
                     "VALUES (?,?,?) RETURNING transfer_id;";
 
-             int transferId = jdbcTemplate.queryForObject(sql, Integer.class, toAccount, fromAccount, txfrAmount);
+            int transferId = jdbcTemplate.queryForObject(sql, Integer.class, toAccount, fromAccount, txfrAmount);
 
             //updates the fromAccount balance
             String sql2 = "UPDATE account SET balance = balance - ?\n" +

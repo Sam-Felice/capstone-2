@@ -15,7 +15,7 @@ import java.security.Principal;
 import java.util.List;
 
 @RestController
-
+@PreAuthorize("isAuthenticated()")
 public class AccountController {
 
     private AccountDao accountDao;
@@ -39,10 +39,12 @@ public class AccountController {
         return this.userDao.findAll();
     }
 
+//    @PreAuthorize("isAuthenticated()")
     @RequestMapping(path = ("/account/{username}/balance"), method = RequestMethod.GET)
     public BigDecimal getBalanceByUsername(@PathVariable String username){
         return this.accountDao.getBalanceByUsername(username);
     }
+
 
     @RequestMapping(path =  "/transfer", method = RequestMethod.POST)
     public boolean executeTransfer(@RequestParam int toAccount,
@@ -51,12 +53,12 @@ public class AccountController {
         return this.transferDao.executeTransfer(toAccount, fromAccount, txfrAmount);
     }
 
-    @RequestMapping(path = "/test", method = RequestMethod.POST)
-    public boolean testTransfer(@RequestParam int toAccount,
-                                   @RequestParam int fromAccount,
-                                   @RequestParam BigDecimal txfrAmount) {
-        return this.transferDao.testTransfer(toAccount, fromAccount, txfrAmount);
-    }
+//    @RequestMapping(path = "/test", method = RequestMethod.POST)
+//    public boolean testTransfer(@RequestParam int toAccount,
+//                                   @RequestParam int fromAccount,
+//                                   @RequestParam BigDecimal txfrAmount) {
+//        return this.transferDao.testTransfer(toAccount, fromAccount, txfrAmount);
+//    }
 
 
     @RequestMapping(path = "/account/{username}/id", method = RequestMethod.GET)

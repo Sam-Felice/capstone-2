@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TransferDao {
 
-    boolean testTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount);
+//    boolean testTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount);
 
 
     boolean executeTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount);
