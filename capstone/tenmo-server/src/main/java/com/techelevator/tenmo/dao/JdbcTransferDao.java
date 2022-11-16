@@ -18,41 +18,10 @@ public class JdbcTransferDao implements TransferDao {
     }
 
 
-//    @Override
-//    public boolean testTransfer(int toAccount, int fromAccount, double txfrAmount) {
-//        //Get the account balance of the fromAccount using the fromAccountId
-//        String sqlFromAccBalance = "SELECT account.balance FROM account\n" +
-//                "JOIN transfers ON account.account_id = transfers.from_account\n" +
-//                "WHERE from_account = ?;";
-//        double fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, double.class, fromAccount);
-//
-//        String sqlToAccBalance = "SELECT account.balance FROM account\n" +
-//                "JOIN transfers ON account.account_id = transfers.from_account\n" +
-//                "WHERE to_account = ?;";
-//        double toAccountBalance = jdbcTemplate.queryForObject(sqlToAccBalance, double.class, toAccount);
-//
-//
-//        if (toAccountBalance ==  1000) {
-//            return true;
-//        }
-//
-//
-//        return false;
-//    }
 
     @Override
     public boolean executeTransfer(int toAccount, int fromAccount, BigDecimal txfrAmount) {
-        //Get current Username
-//        String currentUser = principal.getName();
-
-//        //Get the accountId of the fromAccount with a username
-//        String sqlaccountId = "SELECT account.account_id from account\n" +
-//                "JOIN tenmo_user ON account.user_id = tenmo_user.user_id\n" +
-//                "WHERE tenmo_user.username = ?;";
-//        Integer fromAccountId = jdbcTemplate.queryForObject(sqlaccountId, Integer.class, currentUser);
-
-        //Get the account balance of the fromAccount using the fromAccountId TESTED
-        String sqlFromAccBalance = "SELECT account.balance FROM account\n" +
+         String sqlFromAccBalance = "SELECT account.balance FROM account\n" +
 //                "JOIN transfers ON account.account_id = transfers.from_account\n" +
                 "WHERE account.account_id = ?;";
         BigDecimal fromAccountBalance = jdbcTemplate.queryForObject(sqlFromAccBalance, BigDecimal.class, fromAccount);
